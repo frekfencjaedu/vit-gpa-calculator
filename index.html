@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT GPA Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result, .error {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .error {
+            color: red;
+        }
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>VIT GPA Calculator</h1>
+    <p>Welcome to the VIT GPA Calculator. This simple tool allows you to compute your Grade Point Average (GPA) by entering your semester grades. Just input the number of semesters and the corresponding GPA for each to get started.</p>
+
+    <form id="gpa-form">
+        <label for="semesters">Number of Semesters:</label>
+        <input type="number" id="semesters" min="1" max="10" required>
+        
+        <div id="gpa-inputs"></div>
+
+        <button type="submit">Calculate GPA</button>
+    </form>
+
+    <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
+
+    <footer>
+        <h2>Understanding GPA</h2>
+        <p>GPA, or Grade Point Average, is a metric used to measure your academic performance across semesters. It is calculated by averaging the grades of all your courses.</p>
+        <h2>Tips to Boost Your GPA</h2>
+        <p>To improve your GPA, focus on consistent study habits, seek assistance when needed, and participate actively in all classes. Utilize academic resources and time management strategies effectively.</p>
+        <p>Maintaining a strong GPA is crucial for academic success and can significantly impact your future opportunities, whether in higher education or the job market. At VIT, a high GPA reflects your dedication, understanding of course material, and consistent performance across semesters. Regularly monitoring your GPA helps you stay on track with your academic goals, identify areas for improvement, and take necessary steps to enhance your learning experience. This <a href="https://countingtools.com/vtu-cgpa-calculator/">VIT calculator</a> is designed to assist you in staying informed and proactive about your academic progress, ensuring you make the most of your time at VIT.</p>
+        <h2>Note</h2>
+        <p>This calculator is for personal use and provides an estimated GPA. For official GPA results, please consult the VIT academic records.</p>
+    </footer>
+
+    <script>
+        const form = document.getElementById('gpa-form');
+        const semestersInput = document.getElementById('semesters');
+        const gpaInputsContainer = document.getElementById('gpa-inputs');
+        const resultContainer = document.getElementById('result');
+        const errorContainer = document.getElementById('error');
+
+        // Load previous GPA data if available
+        window.onload = () => {
+            const savedGpa = localStorage.getItem('savedGpa');
+            if (savedGpa) {
+                resultContainer.innerHTML = `<h2>Your last saved GPA is: ${savedGpa}</h2>`;
+            }
+        };
+
+        semestersInput.addEventListener('input', () => {
+            gpaInputsContainer.innerHTML = '';
+            const numberOfSemesters = parseInt(semestersInput.value);
+            for (let i = 1; i <= numberOfSemesters; i++) {
+                const label = document.createElement('label');
+                label.innerText = `Enter GPA for Semester ${i}:`;
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.step = '0.01';
+                input.min = '0';
+                input.max = '10';
+                input.required = true;
+                input.className = 'gpa-input';
+                gpaInputsContainer.appendChild(label);
+                gpaInputsContainer.appendChild(input);
+            }
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            errorContainer.innerHTML = '';
+            resultContainer.innerHTML = '';
+
+            const gpaInputs = document.querySelectorAll('.gpa-input');
+            let totalGpa = 0;
+            let count = 0;
+            let hasError = false;
+
+            gpaInputs.forEach(input => {
+                const value = parseFloat(input.value);
+                if (isNaN(value) || value < 0 || value > 10) {
+                    errorContainer.innerHTML = '<p>Please enter valid GPA values between 0 and 10 for all semesters.</p>';
+                    hasError = true;
+                    return;
+                }
+                totalGpa += value;
+                count++;
+            });
+
+            if (!hasError) {
+                const finalGpa = (totalGpa / count).toFixed(2);
+                resultContainer.innerHTML = `<h2>Your GPA is: ${finalGpa}</h2>`;
+
+                // Save to local storage
+                localStorage.setItem('savedGpa', finalGpa);
+            }
+        });
+    </script>
+</body>
+</html>
